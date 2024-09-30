@@ -18,7 +18,7 @@ class STEVESUEHELPERS_API UFocusablePanel : public UFocusableUserWidget
 public:
     /// The name of the widget which will be initially focussed by default
     /// This is a name because we can't link directly at edit time
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
     FName InitialFocusWidgetName;
 
     // I'd love to make the above a drop-down but it's a lot of faff
