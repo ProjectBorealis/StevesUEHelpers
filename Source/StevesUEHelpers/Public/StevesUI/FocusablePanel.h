@@ -29,21 +29,21 @@ public:
      * @brief Set the current focus to the initial focus widget
      * @return Whether the focus was successfully set
      */
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = UI)
     bool SetFocusToInitialWidget() const;
 
     /**
      * @brief Try to restore focus to the previously focussed child
      * @return Whether the focus was successfully set
      */
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = UI)
     bool RestorePreviousFocus() const;
 
     /**
      * @brief Try to save the currently focussed child as something that can be restored later.
      * @return Whether focus was saved
      */
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = UI)
     bool SavePreviousFocus();
 
     

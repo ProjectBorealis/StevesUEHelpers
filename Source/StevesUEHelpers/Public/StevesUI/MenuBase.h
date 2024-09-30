@@ -25,7 +25,7 @@ public:
     FOnMenuClosed OnClosed;
     
 protected:
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Category = UI)
     TWeakObjectPtr<UMenuStack> ParentStack;
 
     /// Whether this menu should request focus when it is displayed
@@ -83,20 +83,20 @@ public:
 
      * @param bIsRegainedFocus Set this to true if the reason this menu is opening is that it regained focus in a stack
      */
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = UI)
     void Open(bool bIsRegainedFocus = false); 
     /**
      * @brief Request this menu to close. The menu can veto this request.
      * @param bWasCancel Set this to true if the reason for closure was a cancellation action
      * @return True if the request was approved
      */
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = UI)
     bool RequestClose(bool bWasCancel);
     /**
      * @brief Close this menu. This ALWAYS closes the menu, if you want it to be able to veto it, call RequestClose
      * @param bWasCancel Set this to true if the reason for closure was a cancellation action
      */
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = UI)
     void Close(bool bWasCancel);
 
     
@@ -112,6 +112,6 @@ public:
 
 	/// Return whether this menu is currently at the top of the menu stack
 	/// Note: if this menu is not owned by a stack, will always return true
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = UI)
 	bool IsTopOfStack() const;
 };
