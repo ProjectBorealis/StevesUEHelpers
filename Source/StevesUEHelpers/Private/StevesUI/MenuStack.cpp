@@ -5,6 +5,7 @@
 #include "StevesUEHelpers.h"
 #include "StevesUI/MenuBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/GameViewportClient.h"
 
 void UMenuStack::NativeConstruct()
 {
@@ -16,13 +17,16 @@ void UMenuStack::NativeConstruct()
     {
         GS->OnInputModeChanged.AddDynamic(this, &UMenuStack::InputModeChanged);
         LastInputMode = GS->GetLastInputModeUsed();
+
+    	// Ensure that mouse is offscreen & hidden in gamepad mode
+    	// I've seen mouse *occasionally* end up still in the middle of the screen in gamepad mode,
+    	// causing confusing highlighting effects. I'm not sure if it's because of a resolution change or
+    	// something else, but it needs to never be there. The stack is a decent place to do this
+    	if (LastInputMode == EInputMode::Gamepad)
+    	{
+    		GS->MoveMouseOffScreen(true);
+    	}
     }
-
-    SavePreviousInputMousePauseState();
-
-    ApplyInputModeChange(InputModeSettingOnOpen);
-    ApplyMousePointerVisibility(MousePointerVisibilityOnOpen);
-    ApplyGamePauseChange(GamePauseSettingOnOpen);
 }
 
 void UMenuStack::NativeDestruct()
@@ -208,9 +212,14 @@ void UMenuStack::PushMenuByObject(UMenuBase* NewMenu)
         // We keep this allocated, to restore later on back
     }
     Menus.Add(NewMenu);
+	bool IsFirstMenu = Menus.Num() == 1;
+	
+	if (IsFirstMenu)
+		BeforeFirstMenuOpened();
+	
     NewMenu->AddedToStack(this);
 
-    if (Menus.Num() == 1)
+    if (IsFirstMenu)
         FirstMenuOpened();
 }
 
@@ -239,7 +248,7 @@ void UMenuStack::PopMenu(bool bWasCancel)
 
 void UMenuStack::PopMenuIfTop(UMenuBase* UiMenuBase, bool bWasCancel)
 {
-    if (Menus.Last() == UiMenuBase)
+    if (Menus.Num() > 0 && Menus.Last() == UiMenuBase)
     {
         PopMenu(bWasCancel);
     }
@@ -250,10 +259,24 @@ void UMenuStack::PopMenuIfTop(UMenuBase* UiMenuBase, bool bWasCancel)
 }
 
 
+void UMenuStack::BeforeFirstMenuOpened()
+{
+	SavePreviousInputMousePauseState();
+	
+	ApplyInputModeChange(InputModeSettingOnOpen);
+	ApplyMousePointerVisibility(MousePointerVisibilityOnOpen);
+	ApplyGamePauseChange(GamePauseSettingOnOpen);
+}
+
 void UMenuStack::FirstMenuOpened()
 {
     // Don't use world time (even real time) since map can change while open
     TimeFirstOpen = FDateTime::Now();
+
+	if (!IsInViewport() && bAutoAddToViewport)
+	{
+		AddToViewport();
+	}
 }
 
 void UMenuStack::RemoveFromParent()
@@ -278,15 +301,32 @@ UMenuBase* UMenuStack::GetTopMenu() const
     return nullptr;
 }
 
-UMenuStack::UMenuStack()
+UMenuBase* UMenuStack::GetPreviousMenu() const
 {
-    // Default to enabling automatic focus for menus (can still be overridden in serialized properties)
-    bEnableAutomaticFocus = true;
+	if (Menus.Num() > 1)
+	{
+		return Menus.Last(1);
+	}
+	return nullptr;
+}
+
+UMenuStack::UMenuStack():
+	LastInputMode(EInputMode::Unknown),
+	PreviousInputMode(EInputModeChange::GameOnly),
+	PreviousMouseVisibility(EMousePointerVisibilityChange::Visible),
+	PreviousPauseState(EGamePauseChange::Unpaused),
+	MenuContainer(nullptr)
+{
+	// Default to enabling automatic focus for menus (can still be overridden in serialized properties)
+	bEnableAutomaticFocus = true;
 }
 
 void UMenuStack::LastMenuClosed(bool bWasCancel)
 {
-    RemoveFromParent(); // this will do MenuSystem interaction
+	if (bAutoRemoveFromViewport)
+	{
+		RemoveFromParent(); // this will do MenuSystem interaction
+	}
     OnClosed.Broadcast(this, bWasCancel);
 
     ApplyInputModeChange(InputModeSettingOnClose);
@@ -299,10 +339,14 @@ void UMenuStack::LastMenuClosed(bool bWasCancel)
 void UMenuStack::CloseAll(bool bWasCancel)
 {
     // We don't go through normal pop sequence, this is a shot circuit
-    for (int i = Menus.Num() - 1; i >= 0; --i)
-    {
-        Menus[i]->RemovedFromStack(this);
-    }
+	for (int i = Menus.Num() - 1; i >= 0; --i)
+	{
+		UMenuBase* Menu = Menus[i];
+		if (IsValid(Menu))
+		{
+			Menus[i]->RemovedFromStack(this);
+		}
+	}
     Menus.Empty();
     LastMenuClosed(bWasCancel);
 }

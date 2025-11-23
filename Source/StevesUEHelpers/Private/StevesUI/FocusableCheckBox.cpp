@@ -1,5 +1,7 @@
 ﻿#include "StevesUI/FocusableCheckBox.h"
 #include "StevesUI/SFocusableCheckBox.h"
+#include "Runtime/Launch/Resources/Version.h"
+#include "Framework/Application/SlateApplication.h"
 
 
 TSharedRef<SWidget> UFocusableCheckBox::RebuildWidget()
@@ -95,5 +97,35 @@ void UFocusableCheckBox::SlateHandleHovered()
 
 void UFocusableCheckBox::SlateHandleUnhovered()
 {
-    OnUnhovered.Broadcast();
+	if (bLoseFocusOnUnhover)
+	{
+		Unfocus();
+	}
+	OnUnhovered.Broadcast();
+}
+
+void UFocusableCheckBox::Unfocus() const
+{
+	APlayerController* OwningPlayer = GetOwningPlayer();
+	if (OwningPlayer == nullptr || !OwningPlayer->IsLocalController() || OwningPlayer->Player ==
+		nullptr)
+	{
+		return;
+	}
+	if (ULocalPlayer* LocalPlayer = OwningPlayer->GetLocalPlayer())
+	{
+		TOptional<int32> UserIndex = FSlateApplication::Get().GetUserIndexForController(
+			LocalPlayer->GetControllerId());
+		if (UserIndex.IsSet())
+		{
+			TSharedPtr<SWidget> SafeWidget = GetCachedWidget();
+			if (SafeWidget.IsValid())
+			{
+				if (SafeWidget->HasUserFocus(UserIndex.GetValue()))
+				{
+					FSlateApplication::Get().ClearUserFocus(UserIndex.GetValue());
+				}
+			}
+		}
+	}
 }

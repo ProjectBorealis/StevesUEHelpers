@@ -26,7 +26,7 @@ class STEVESUEHELPERS_API UFocusableButton : public UButton
     GENERATED_UCLASS_BODY()
 
 public:
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Focus")
     bool bUseHoverStyleWhenFocussed = true;
 
     UPROPERTY(BlueprintAssignable, Category="Button|Event")
@@ -35,14 +35,17 @@ public:
     UPROPERTY(BlueprintAssignable, Category="Button|Event")
     FOnButtonFocusLostEvent OnFocusLost;
     
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Focus")
     bool bTakeFocusOnHover = true;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Focus")
+    bool bLoseFocusOnUnhover = true;
+
     // Simulate a button press
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category="Focus")
     void SimulatePress();
     // Simulate a button release
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category="Focus")
     void SimulateRelease();
 
 protected:    
@@ -56,12 +59,14 @@ protected:
     void SlateHandleHovered();
     void SlateHandleUnhovered();
 
+    void Unfocus() const;
+
     virtual TSharedRef<SWidget> RebuildWidget() override;
 
     
     /// Update the focussed style based on changes made to the default widget style.
     /// Call this if you make runtime changes to the base style of this button.
     /// Needed because we can't override SetStyle
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Focus")
     void RefreshFocussedStyle();
 };

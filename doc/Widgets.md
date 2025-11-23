@@ -66,3 +66,19 @@ Several custom widgets are supplied to assist with some common challenges:
   and also remembers the last focus widget if you switch away & back
   without destroying it.
 
+* [Smooth Changing Progress Bar](SmoothChangingProgress.md)
+
+  A ProgressBar subclass which adds the ability to smoothly change rather than
+  jumping straight to the target value.
+
+* [Focusable Slider](../Source/StevesUEHelpers/Public/StevesUI/FocusableSlider.h)
+
+    A simple subclass of the regular slider which supports gamepad navigation and uses the
+    hover style when it has focus.
+
+* [Subtitle Textblock](../Source/StevesUEHelpers/Public/StevesUI/StevesSubtitleTextblock.h) and 
+  [Multi-subtitle Vertical Box](../Source/StevesUEHelpers/Public/StevesUI/MultiSubtitleVerticalbox.h)
+  
+   The default UE subtitles are rendered directly to a canvas and are a bit crap, you can't
+   easily control the style or position. So just drop one of these into your widgets instead
+   and style it exactly like you want.

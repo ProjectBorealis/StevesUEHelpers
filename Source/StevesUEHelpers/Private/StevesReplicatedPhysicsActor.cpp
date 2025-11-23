@@ -1,6 +1,9 @@
 ﻿// Copyright Steve Streeting
 // Licensed under the MIT License (see License.txt)
 #include "StevesReplicatedPhysicsActor.h"
+#include "Runtime/Launch/Resources/Version.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/World.h"
 
 
 AStevesReplicatedPhysicsActor::AStevesReplicatedPhysicsActor(const FObjectInitializer& ObjInit)
@@ -18,7 +21,11 @@ AStevesReplicatedPhysicsActor::AStevesReplicatedPhysicsActor(const FObjectInitia
 	MeshComp->bReplicatePhysicsToAutonomousProxy = true;
 
 	// The default MinNetUpdateFrequency of 2 is too slow at responding to woken physics objects
+#if ENGINE_MINOR_VERSION >= 5
+	SetMinNetUpdateFrequency(10);
+#else
 	MinNetUpdateFrequency = 10;
+#endif
 	
 	// We do NOT replicate MeshComp itself! That's expensive and unnecessary
 

@@ -5,6 +5,8 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Curves/RichCurve.h"
+#include "Components/ActorComponent.h"
 #include "StevesLightFlicker.generated.h"
 
 
@@ -22,6 +24,8 @@ enum class EStevesLightFlickerPattern : uint8
 	GentlePulse1,
 	FlourescentFlicker,
 	SlowPulseNoBlack,
+	Torch1,
+	Torch2,
 
 	Custom
 	
@@ -37,7 +41,7 @@ protected:
 	static TMap<EStevesLightFlickerPattern, FRichCurve> Curves;
 	static TMap<FString, FRichCurve> CustomCurves;
 	static FCriticalSection CriticalSection;
-	static const TMap<EStevesLightFlickerPattern, FString> QuakeCurveSources;
+	static const TMap<EStevesLightFlickerPattern, FString> StandardPatterns;
 	
 
 	static void BuildCurve(EStevesLightFlickerPattern CurveType, FRichCurve& OutCurve);
@@ -100,20 +104,31 @@ protected:
 	UFUNCTION()
 	void OnRep_TimePos();
 	void ValueUpdate();
+	void GenerateCurveAndPlay();
 
 public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnLightFlickerUpdate OnLightFlickerUpdate;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Light Flicker")
 	void Play(bool bResetTime = false);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Light Flicker")
 	void Pause();
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category="Light Flicker")
 	float GetCurrentValue() const;
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime,
 		ELevelTick TickType,
 		FActorComponentTickFunction* ThisTickFunction) override;
+
+	/// Change the flicker pattern dynamically
+	UFUNCTION(BlueprintCallable, Category="Light Flicker")
+	void SetFlickerPattern(EStevesLightFlickerPattern Pattern, const FString& CustomPatternString = FString(""));
+
+	/// Get the flicker pattern
+	UFUNCTION(BlueprintPure, Category="Light Flicker")
+	EStevesLightFlickerPattern GetFlickerPattern(FString& CustomString);
+
+
 };

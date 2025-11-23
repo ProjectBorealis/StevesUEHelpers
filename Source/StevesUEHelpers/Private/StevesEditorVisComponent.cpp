@@ -3,7 +3,9 @@
 
 #include "StevesEditorVisComponent.h"
 #include "StaticMeshResources.h"
+#include "Engine/StaticMesh.h"
 #include "StevesDebugRenderSceneProxy.h"
+#include "DynamicMeshBuilder.h"
 
 UStevesEditorVisComponent::UStevesEditorVisComponent(const FObjectInitializer& ObjectInitializer)
 	: UPrimitiveComponent(ObjectInitializer)
@@ -137,7 +139,8 @@ FPrimitiveSceneProxy* UStevesEditorVisComponent::CreateSceneProxy()
 
 FBoxSphereBounds UStevesEditorVisComponent::CalcBounds(const FTransform& LocalToWorld) const
 {
-	FBoxSphereBounds B = Super::CalcBounds(LocalToWorld);
+	// Get superclass bounds in LOCAL space (don't pass LocalToWorld)
+	FBoxSphereBounds B = Super::CalcBounds(FTransform::Identity);
 
 	// Now we need to merge in all components
 	for (auto& L : Lines)

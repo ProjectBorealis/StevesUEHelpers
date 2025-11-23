@@ -20,6 +20,7 @@ void UMenuBase::Close(bool bWasCancel)
         RemoveFromParent();
         PreviousFocusWidget.Reset();
     }
+    AfterClosed.Broadcast(this, bWasCancel);
 }
 
 void UMenuBase::AddedToStack(UMenuStack* Parent)
@@ -105,7 +106,7 @@ void UMenuBase::Open(bool bIsRegain)
         EmbedInParent();
     else
         AddToViewport();
-    SetVisibility(ESlateVisibility::Visible);
+    SetVisibility(bBlockClicks ? ESlateVisibility::Visible : ESlateVisibility::SelfHitTestInvisible);
 
     auto PC = GetOwningPlayer();    
     switch (InputModeSetting)

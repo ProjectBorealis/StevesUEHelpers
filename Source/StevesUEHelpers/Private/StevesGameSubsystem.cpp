@@ -14,6 +14,11 @@
 #include "GameFramework/PlayerInput.h"
 #include "StevesUI/KeySprite.h"
 #include "StevesUI/StevesUI.h"
+#include "TimerManager.h"
+#include "AssetRegistry/AssetData.h"
+#include "Engine/Engine.h"
+#include "Engine/LocalPlayer.h"
+#include "UnrealClient.h"
 
 //PRAGMA_DISABLE_OPTIMIZATION
 
@@ -129,6 +134,33 @@ void UStevesGameSubsystem::RegisterInterestInEnhancedInputAction(const UInputAct
     
 }
 
+void UStevesGameSubsystem::UnregisterAllInterestInEnhancedInputActions()
+{
+    if (auto GI = GetGameInstance())
+    {
+        if (auto PC = GI->GetFirstLocalPlayerController())
+        {
+            if (auto EIC = Cast<UEnhancedInputComponent>(PC->InputComponent))
+            {
+            	TArray<uint32> HandlesToRemove;
+	            for (auto& Binding : EIC->GetActionEventBindings())
+	            {
+		            if (Binding->IsBoundToObject(this))
+		            {
+		            	HandlesToRemove.Add(Binding->GetHandle());
+		            }
+	            }
+
+            	for (const uint32 Handle : HandlesToRemove)
+            	{
+            		EIC->RemoveBindingByHandle(Handle);
+            	}
+            }
+        }
+    }
+    RegisteredEnhancedInputActionInterests.Empty();
+}
+
 void UStevesGameSubsystem::EnhancedInputActionTriggered(const FInputActionInstance& InputActionInstance)
 {
     OnEnhancedInputActionTriggered.Broadcast(InputActionInstance.GetSourceAction(), InputActionInstance.GetTriggerEvent());
@@ -178,36 +210,51 @@ void UStevesGameSubsystem::OnInputDetectorModeChanged(int PlayerIndex, EInputMod
         bCheckedViewportClient = true;
     
     }
-    
-    auto GI = GetGameInstance();
-    auto VC = GI->GetGameViewportClient();
-    auto SVC = Cast<UStevesGameViewportClientBase>(VC);
-    if (VC)
-    {
-        if (NewMode == EInputMode::Gamepad)
-        {
-            // First move mouse pointer out of the way because it still generates mouse hits (unless we make source changes to Slate, ugh)
-            auto PC = GI->GetFirstLocalPlayerController();
-            FVector2D Sz;
-            VC->GetViewportSize(Sz);
-            // -1 because if you move cursor outside window when captured, Slate blows up when you press Return, ughghh 
-            PC->SetMouseLocation(Sz.X-1,Sz.Y-1);
 
-            // Now hide it
-            // I've seen people use PC->bShowMouseCursor but this messes with capturing when you switch back & forth
-            // especially when pausing in the editor
-
-            // instead, I'm using a separate flag to suppress it, see UiFixGameViewportClient for usage
-            if (SVC)
-                SVC->SetSuppressMouseCursor(true);
-        }
-        else if (NewMode == EInputMode::Mouse)
-        {
-            if (SVC)
-                SVC->SetSuppressMouseCursor(false);
-        }
-    }
+	auto Settings = GetDefault<UStevesPluginSettings>();
+	if (Settings->bHideMouseWhenGamepadUsed)
+	{
+		auto GI = GetGameInstance();
+		auto VC = GI->GetGameViewportClient();
+		auto SVC = Cast<UStevesGameViewportClientBase>(VC);
+		if (VC)
+		{
+			if (NewMode == EInputMode::Gamepad)
+			{
+				// First move mouse pointer out of the way because it still generates mouse hits (unless we make source changes to Slate, ugh)
+				MoveMouseOffScreen(true);
+			}
+			else if (NewMode == EInputMode::Mouse)
+			{
+				if (SVC)
+					SVC->SetSuppressMouseCursor(false);
+			}
+		}
+	}
     OnInputModeChanged.Broadcast(PlayerIndex, NewMode);
+}
+
+void UStevesGameSubsystem::MoveMouseOffScreen(bool bAlsoHide) const
+{
+	if (auto GI = GetGameInstance())
+	{
+		auto VC = GI->GetGameViewportClient();
+		auto SVC = Cast<UStevesGameViewportClientBase>(VC);
+		auto PC = GI->GetFirstLocalPlayerController();
+	
+		FVector2D Sz;
+		VC->GetViewportSize(Sz);
+		// -1 because if you move cursor outside window when captured, Slate blows up when you press Return, ughghh 
+		PC->SetMouseLocation(Sz.X-1,Sz.Y-1);
+
+		// Now hide it
+		// I've seen people use PC->bShowMouseCursor but this messes with capturing when you switch back & forth
+		// especially when pausing in the editor
+		// instead, I'm using a separate flag to suppress it, see UiFixGameViewportClient for usage
+		if (SVC && bAlsoHide)
+			SVC->SetSuppressMouseCursor(true);
+	}
+
 }
 
 void UStevesGameSubsystem::OnButtonInputDetectorModeChanged(int PlayerIndex, EInputMode NewMode)
