@@ -21,41 +21,41 @@ class STEVESUEHELPERS_API UOptionWidgetBase : public UFocusableUserWidget
 public:
 
     // -- Properties automatically bound to Blueprint widget
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget), Category = UI)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
     UWidget* MouseVersion;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget), Category = UI)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
     UButton* MouseUpButton;    
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget), Category = UI)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
     UButton* MouseDownButton;    
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget), Category = UI)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
     UImage* MouseUpImage;    
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget), Category = UI)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
     UImage* MouseDownImage;    
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget), Category = UI)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
     UTextBlock* MouseText;    
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget), Category = UI)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
     UButton* GamepadVersion;    
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget), Category = UI)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
     UImage* GamepadUpImage;    
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget), Category = UI)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
     UImage* GamepadDownImage;    
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget), Category = UI)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
     UTextBlock* GamepadText;
 
     /// Event raised when the selected option changes
     UPROPERTY(BlueprintAssignable)
     FOnSelectedOptionChanged OnSelectedOptionChanged;
 
-    UFUNCTION(BlueprintCallable, Category = UI)
+    UFUNCTION(BlueprintCallable)
     /// Remove all options
     virtual void ClearOptions();
 
@@ -64,7 +64,7 @@ public:
      * @param Option The text for the new option
      * @return The index for the new option
      */
-    UFUNCTION(BlueprintCallable, Category = UI)
+    UFUNCTION(BlueprintCallable)
     virtual int AddOption(FText Option);
 
     
@@ -73,19 +73,19 @@ public:
      * @param Options All options to be available
      * @param NewSelectedIndex Which of the options to select by default
      */
-    UFUNCTION(BlueprintCallable, Category = UI)
+    UFUNCTION(BlueprintCallable)
     virtual void SetOptions(const TArray<FText>& Options, int NewSelectedIndex = 0);
     
-    UFUNCTION(BlueprintPure, Category = UI)
+    UFUNCTION(BlueprintPure)
     virtual int GetSelectedIndex() const { return SelectedIndex; }
 
-    UFUNCTION(BlueprintPure, Category = UI)
+    UFUNCTION(BlueprintPure)
     virtual FText GetSelectedOption() const;
     /**
      * @brief Change the selected index option
      * @param NewIndex The new index to set, can be -1 for no selection
      */
-    UFUNCTION(BlueprintCallable, Category = UI)
+    UFUNCTION(BlueprintCallable)
     virtual void SetSelectedIndex(int NewIndex);
 
     virtual void SetFocusProperly_Implementation() override;
@@ -98,18 +98,18 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Content)
     int SelectedIndex;
 
-    UFUNCTION(BlueprintCallable, Category = UI)
+    UFUNCTION(BlueprintCallable)
     virtual void SetMouseMode();
-    UFUNCTION(BlueprintCallable, Category = UI)
+    UFUNCTION(BlueprintCallable)
     virtual void SetButtonMode();
 
-    UFUNCTION(BlueprintCallable, Category = UI)
+    UFUNCTION(BlueprintCallable)
     virtual void UpdateFromInputMode(EInputMode Mode);
     virtual void NativeConstruct() override;
     virtual void NativeDestruct() override;
-    UFUNCTION(BlueprintCallable, Category = UI)
+    UFUNCTION(BlueprintCallable)
     virtual void ChangeOption(int Delta);
-    UFUNCTION(BlueprintCallable, Category = UI)
+    UFUNCTION(BlueprintCallable)
     virtual EInputMode GetCurrentInputMode() const;
 	virtual void UpdateUpDownButtons();
 

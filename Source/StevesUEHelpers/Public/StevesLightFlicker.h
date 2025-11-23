@@ -1,4 +1,4 @@
-// Copyright Steve Streeting
+﻿// Copyright Steve Streeting
 // Licensed under the MIT License (see License.txt)
 
 #pragma once
@@ -106,11 +106,11 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnLightFlickerUpdate OnLightFlickerUpdate;
 
-	UFUNCTION(BlueprintCallable, Category = Rendering)
+	UFUNCTION(BlueprintCallable)
 	void Play(bool bResetTime = false);
-	UFUNCTION(BlueprintCallable, Category = Rendering)
+	UFUNCTION(BlueprintCallable)
 	void Pause();
-	UFUNCTION(BlueprintPure, Category = Rendering)
+	UFUNCTION(BlueprintPure)
 	float GetCurrentValue() const;
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime,

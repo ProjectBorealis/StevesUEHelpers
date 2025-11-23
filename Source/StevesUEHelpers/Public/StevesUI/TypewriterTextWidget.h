@@ -1,4 +1,4 @@
-// Original Copyright (c) Sam Bloomberg https://github.com/redxdev/UnrealRichTextDialogueBox (MIT License)
+﻿// Original Copyright (c) Sam Bloomberg https://github.com/redxdev/UnrealRichTextDialogueBox (MIT License)
 // Updates:
 //   1. Fixed adding a spurious newline to single-line text
 //   2. Expose line finished as event
@@ -68,7 +68,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnTypewriterRunNameChanged OnTypewriterRunNameChanged;
 	
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget), Category = UI)
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	URichTextBlockForTypewriter* LineText;
 
 	/// The amount of time between printing individual letters (for the "typewriter" effect).
@@ -102,11 +102,11 @@ public:
 	int MaxNumberOfLines = 0;
 
 	/// Set Text immediately
-	UFUNCTION(BlueprintCallable, Category = UI)
+	UFUNCTION(BlueprintCallable)
 	void SetText(const FText& InText);
 
 	/// Set Text immediately
-	UFUNCTION(BlueprintCallable, Category = UI)
+	UFUNCTION(BlueprintCallable)
 	FText GetText() const;
 
 	 

@@ -1,4 +1,4 @@
-// 
+﻿// 
 
 #pragma once
 
@@ -15,9 +15,9 @@ class STEVESUEHELPERS_API AStevesDynamicNavMeshVolume : public ANavMeshBoundsVol
 public:
 	AStevesDynamicNavMeshVolume();
 
-	UFUNCTION(BlueprintCallable, Category=AI)
+	UFUNCTION(BlueprintCallable)
 	void SetLocationAndDimensions(const FVector& Location, const FVector& NewDimensions);
-	UFUNCTION(BlueprintCallable, Category=AI)
+	UFUNCTION(BlueprintCallable)
 	void SetDimensions(const FVector& NewDimensions);
 
 protected:

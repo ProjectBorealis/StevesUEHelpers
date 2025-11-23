@@ -148,10 +148,10 @@ protected:
 
     FTimerHandle ForegroundCheckHandle;
 
-    UPROPERTY(BlueprintReadOnly, Category = UI)
+    UPROPERTY(BlueprintReadOnly)
     bool bIsForeground = true;
 
-    UPROPERTY(BlueprintReadWrite, Category = UI)
+    UPROPERTY(BlueprintReadWrite)
     UUiTheme* DefaultUiTheme;
 
     TArray<FStevesTextureRenderTargetPoolPtr> TextureRenderTargetPools;
@@ -208,16 +208,16 @@ public:
     FOnWindowForegroundChanged OnWindowForegroundChanged;
 
     /// Gets the device where the most recent input event of any kind happened
-    UFUNCTION(BlueprintCallable, Category = Input)
+    UFUNCTION(BlueprintCallable)
     EInputMode GetLastInputModeUsed(int PlayerIndex = 0) const { return InputDetector->GetLastInputMode(PlayerIndex); }
     /// Gets the device where the most recent button press happened
-    UFUNCTION(BlueprintCallable, Category = Input)
+    UFUNCTION(BlueprintCallable)
     EInputMode GetLastInputButtonPressed(int PlayerIndex = 0) const { return InputDetector->GetLastButtonInputMode(PlayerIndex); }
     /// Gets the device where the most recent axis move happened
-    UFUNCTION(BlueprintCallable, Category = Input)
+    UFUNCTION(BlueprintCallable)
     EInputMode GetLastInputAxisMoved(int PlayerIndex = 0) const { return InputDetector->GetLastAxisInputMode(PlayerIndex); }
     
-    UFUNCTION(BlueprintCallable, Category = Input)
+    UFUNCTION(BlueprintCallable)
     bool LastInputWasGamePad(int PlayerIndex = 0) const { return GetLastInputModeUsed(PlayerIndex) == EInputMode::Gamepad; }
 
     /// Gets the default UI theme object (defaults to our own)
@@ -243,7 +243,7 @@ public:
      * @param Theme Optional explicit theme, if blank use the default theme
      * @return 
      */
-    UFUNCTION(BlueprintCallable, Category = Input)
+    UFUNCTION(BlueprintCallable)
     UPaperSprite* GetInputImageSprite(EInputBindingType BindingType,
                                       FName ActionOrAxis,
                                       FKey Key,
@@ -329,7 +329,7 @@ public:
      * so we need the user to tell us when they make a change.
      * This call is however slightly delayed before being acted upon, because EI defers the rebuild of mappings until the next tick.
      */
-    UFUNCTION(BlueprintCallable, Category = Input)
+    UFUNCTION(BlueprintCallable)
     void NotifyEnhancedInputMappingsChanged();
 
     /** Attempt to find an enhanced input action by name in the configured folders.
@@ -340,6 +340,6 @@ public:
     /// Register an interest in an enhanced input action. Calling this will result in OnEnhancedInputActionTriggered being called
     /// when this action is triggered.
     /// This is mainly for use in UI bindings. You only need to call it once for each UI-specific action.
-    UFUNCTION(BlueprintCallable, Category = Input)
+    UFUNCTION(BlueprintCallable)
     void RegisterInterestInEnhancedInputAction(const UInputAction* Action, ETriggerEvent TriggerEvent);
 };

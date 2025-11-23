@@ -17,9 +17,9 @@ class STEVESUEHELPERS_API UUiTheme : public UPrimaryDataAsset
 
 public:
 
-    UPROPERTY(EditDefaultsOnly, Category = UI)
+    UPROPERTY(EditDefaultsOnly)
     TSoftObjectPtr<UDataTable> KeyboardMouseImages;
-    UPROPERTY(EditDefaultsOnly, Category = UI)
+    UPROPERTY(EditDefaultsOnly)
     TSoftObjectPtr<UDataTable> XboxControllerImages;
     
 };
