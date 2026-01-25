@@ -6,7 +6,7 @@
 
 /// "Balanced" random stream, using the Halton Sequence
 /// This is deterministic and more uniform in appearance than a general random stream (although not perfectly uniform)
-USTRUCT(BlueprintType)
+USTRUCT(BlueprintType, meta=(HasNativeMake="/Script/StevesUEHelpers.StevesBPL.MakeBalancedRandomStream"))
 struct STEVESUEHELPERS_API FStevesBalancedRandomStream
 {
 	GENERATED_BODY()
