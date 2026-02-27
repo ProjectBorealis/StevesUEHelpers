@@ -4,7 +4,7 @@
   "VersionName": "1.0",
   "FriendlyName": "Steve's UE4 Helpers",
   "Description": "A set of common helper classes for UE4 projects by Steve Streeing",
-  "Category": "Code Utilities",
+  "Category": "Runtime",
   "CreatedBy": "Steve Streeting",
   "CreatedByURL": "https://www.stevestreeting.com",
   "DocsURL": "",
